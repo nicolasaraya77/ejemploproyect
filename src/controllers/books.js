@@ -17,21 +17,18 @@ const getBooks = async (req, res) => {
   console.log(res.status(200).json(response.rows));
 };
 
-const getBookBySection = async (req, res) => {
-  const Section = req.params.section;
-  const response = await pool.query("SELECT * FROM books Where section = $1", [
-    Section,
-  ]);
+const getBookById = async (req, res) => {
+  const id = parseInt(req.params.id);
+  const response = await pool.query("SELECT * FROM books Where id = $1", [id]);
   res.json(response.rows);
 };
 
 //logica del controlador , peticiones post (insercion de valores)
 const createBook = async (req, res) => {
-  console.log(req.body);
-  const { title, author } = req.body;
+  const { section, title, author } = req.body;
   const response = await pool.query(
-    "INSERT INTO books (section, tittle, author) VALUES ($1,$2,$3)",
-    [2, title, author]
+    "INSERT INTO books (section, title, author) VALUES ($1,$2, $3)",
+    [section, title, author]
   );
   res.json({
     message: "libro añadido con exito",
@@ -46,14 +43,13 @@ const createBook = async (req, res) => {
 generar la peticion post usar postman o similar https://www.postman.com*/
 //logica del controlador , peticiones put (actualizacion de valores)
 const updateBook = async (req, res) => {
-  const Section = parseInt(req.params.section);
-  const { title, author } = req.body;
-  console.log(Section);
-  console.log(req.body);
+  const id = parseInt(req.params.id);
+  const { section, title, author } = req.body;
+  console.log(id, section);
 
   const response = await pool.query(
-    "UPDATE books SET title = $1, author = $2 Where section = $3",
-    [title, author, Section]
+    "UPDATE books SET  section = $1, title = $2, author = $3 Where id = $4",
+    [section, title, author, id]
   );
 
   res.json({ message: "libro actualizado" });
@@ -61,16 +57,17 @@ const updateBook = async (req, res) => {
 
 //logica del controlador , peticiones delete (eliminacion  de valores)
 const deleteBook = async (req, res) => {
-  const Section = req.params.section;
-  await pool.query("DELETE FROM books where section = $1", [Section]);
-  res.json("eliminado");
+  const id = parseInt(req.params.id);
+  const response = await pool.query("DELETE FROM books where id = $1", [id]);
+  res.json("libro eliminado");
 };
 
 module.exports = {
   getBooks,
-  getBookBySection,
+  getBookById,
   createBook,
   updateBook,
+  deleteBook,
 };
 
 /*

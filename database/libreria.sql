@@ -9,6 +9,7 @@ create database library;
 
 create table books
 (
+    id SERIAL PRIMARY KEY,
     section int,
     title text,
     author text

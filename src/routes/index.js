@@ -3,16 +3,18 @@ const router = Router();
 
 const {
   getBooks,
-  getBookBySection,
+  getBookById,
   createBook,
   updateBook,
+  deleteBook,
 } = require("../controllers/books");
 
 //ruta de libros
 router.get("/books", getBooks);
-router.get("/books/:section", getBookBySection);
+router.get("/books/:id", getBookById);
 
 router.post("/books", createBook);
-router.put("books/:section", updateBook);
+router.put("/books/:id", updateBook);
+router.delete("/books/:id", deleteBook);
 
 module.exports = router;
