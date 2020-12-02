@@ -5,7 +5,7 @@ const { Pool } = require("pg");
 const pool = new Pool({
   user: "postgres",
   host: "localhost",
-  password: "",
+  password: "postgres",
   database: "library",
   port: "5432",
 });
@@ -25,17 +25,22 @@ const getBookById = async (req, res) => {
 
 //logica del controlador , peticiones post (insercion de valores)
 const createBook = async (req, res) => {
-  const { section, title, author } = req.body;
-  const response = await pool.query(
-    "INSERT INTO books (section, title, author) VALUES ($1,$2, $3)",
-    [section, title, author]
-  );
-  res.json({
-    message: "libro añadido con exito",
-    body: {
-      book: { section, title, author },
-    },
-  });
+  try {
+    // Extraer el proyecto y comprobar si existe
+    console.log(req.body);
+    const { section, title, author } = req.body;
+
+    // Creamos la tarea
+
+    const response = await pool.query(
+      "INSERT INTO books (section, title, author) VALUES ($1,$2, $3)",
+      [section, title, author]
+    );
+    res.json({ response, message: "libro añadido con exito" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "error" });
+  }
 };
 
 /* para 
@@ -45,7 +50,7 @@ generar la peticion post usar postman o similar https://www.postman.com*/
 const updateBook = async (req, res) => {
   const id = parseInt(req.params.id);
   const { section, title, author } = req.body;
-  console.log(id, section);
+  console.log(id);
 
   const response = await pool.query(
     "UPDATE books SET  section = $1, title = $2, author = $3 Where id = $4",
